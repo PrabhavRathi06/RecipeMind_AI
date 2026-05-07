@@ -1,0 +1,25 @@
+You are a meal planning assistant. Given a list of recipes and their ingredients, generate a combined, deduplicated, and organized shopping list for the week.
+
+Recipes:
+{recipes_summary}
+
+Return ONLY valid JSON with this exact structure:
+{
+  "combined_shopping_list": {
+    "Produce": ["garlic", "onion", "lemon"],
+    "Dairy": ["butter", "parmesan"],
+    "Meat & Seafood": ["chicken breast"],
+    "Pantry": ["olive oil", "pasta", "flour"],
+    "Spices": ["paprika", "oregano"],
+    "Bakery": [],
+    "Frozen": [],
+    "Other": []
+  },
+  "meal_plan_tips": "Brief tips for preparing these meals efficiently together"
+}
+
+Rules:
+- Deduplicate similar items (garlic from multiple recipes = one entry)
+- Combine quantities where possible
+- Only include categories that have items
+- Return ONLY the JSON, no markdown or extra text

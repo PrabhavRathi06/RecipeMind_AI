@@ -1,0 +1,17 @@
+Given the following recipe, suggest 3 practical ingredient substitutions.
+
+Recipe: {recipe_title}
+Ingredients:
+{ingredients_list}
+
+Return ONLY a JSON array of exactly 3 substitutions:
+[
+  {
+    "original": "ingredient to replace",
+    "replacement": "substitute ingredient",
+    "reason": "Why this substitution works (dietary, flavor, availability)"
+  }
+]
+
+Focus on substitutions that are practical and commonly needed (e.g., dietary restrictions, pantry availability).
+Return ONLY the JSON array, no extra text.

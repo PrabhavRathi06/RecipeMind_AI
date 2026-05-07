@@ -1,0 +1,17 @@
+Given these ingredients for a recipe, estimate the nutritional information per serving.
+
+Recipe: {recipe_title}
+Servings: {servings}
+Ingredients:
+{ingredients_list}
+
+Return ONLY a JSON object:
+{
+  "calories": "XXX kcal",
+  "protein": "XXg",
+  "carbs": "XXg",
+  "fat": "XXg"
+}
+
+Base your estimates on standard USDA nutritional values. Divide totals by the number of servings.
+Return ONLY JSON, no extra text.

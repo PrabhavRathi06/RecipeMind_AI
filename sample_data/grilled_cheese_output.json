@@ -1,0 +1,49 @@
+{
+  "success": true,
+  "message": "Recipe extracted and saved successfully",
+  "cached": false,
+  "recipe": {
+    "id": 1,
+    "url": "https://www.allrecipes.com/recipe/23891/grilled-cheese-sandwich/",
+    "title": "Grilled Cheese Sandwich",
+    "cuisine": "American",
+    "difficulty": "easy",
+    "prep_time": "5 minutes",
+    "cook_time": "10 minutes",
+    "total_time": "15 minutes",
+    "servings": "1 serving",
+    "created_at": "2025-01-15T10:30:00Z",
+    "ingredients": [
+      {"quantity": "2", "unit": "slices", "item": "white bread"},
+      {"quantity": "2", "unit": "slices", "item": "cheddar cheese"},
+      {"quantity": "1", "unit": "tbsp", "item": "butter"}
+    ],
+    "instructions": [
+      {"step_number": 1, "instruction_text": "Heat a skillet over medium heat."},
+      {"step_number": 2, "instruction_text": "Butter one side of each slice of bread."},
+      {"step_number": 3, "instruction_text": "Place cheese between the unbuttered sides of bread."},
+      {"step_number": 4, "instruction_text": "Cook until golden brown, about 3-4 minutes per side."}
+    ],
+    "nutrition": {
+      "calories": "390 kcal",
+      "protein": "14g",
+      "carbs": "34g",
+      "fat": "22g"
+    },
+    "substitutions": [
+      {"original": "butter", "replacement": "olive oil", "reason": "Healthier fat alternative with similar browning effect"},
+      {"original": "white bread", "replacement": "sourdough", "reason": "More flavor and better texture"},
+      {"original": "cheddar cheese", "replacement": "gruyere", "reason": "Melts better and has a richer flavor"}
+    ],
+    "shopping_list": [
+      {"category": "Bakery", "item": "white bread"},
+      {"category": "Dairy", "item": "cheddar cheese"},
+      {"category": "Dairy", "item": "butter"}
+    ],
+    "related_recipes": [
+      {"title": "Tomato Soup", "description": "Classic pairing with grilled cheese", "suggested_url": null},
+      {"title": "Grilled Cheese with Bacon", "description": "Elevated version with crispy bacon", "suggested_url": null},
+      {"title": "French Onion Soup", "description": "Another warm comfort food", "suggested_url": null}
+    ]
+  }
+}
