@@ -2,6 +2,12 @@
 
 > An intelligent, full-stack recipe extraction and meal planning platform powered by **Google Gemini** (via LangChain), **FastAPI**, **PostgreSQL**, and **React**.
 
+## Live Links
+
+- **Frontend (Vercel)**: `https://recipe-mind-h2dxtltoe-prabhav-rathis-projects.vercel.app/`
+- **Backend API (Render)**: `https://recipemind-backend.onrender.com/`
+- **Demo Video**: `https://drive.google.com/file/d/1a9ssFaDkckUmrxa1Qs0iq-FsSbxpKzEQ/view?usp=sharing`
+
 ---
 
 ## Features
