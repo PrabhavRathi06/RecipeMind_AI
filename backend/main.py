@@ -7,7 +7,7 @@ import models
 import crud
 import schemas
 from database import engine, get_db
-from scraper import scrape_recipe_page
+from scraper import scrape_recipe_page, extract_recipe_from_jsonld
 from llm import extract_recipe_with_llm, generate_meal_plan
 
 # setup app
@@ -84,10 +84,23 @@ def extract_recipe(request: schemas.ExtractRequest, db: Session = Depends(get_db
     try:
         llm_data = extract_recipe_with_llm(scraped["cleaned_text"], url)
     except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail=str(e)
-        )
+        msg = str(e)
+        # If Gemini quota/rate-limit is hit, fall back to JSON-LD extraction.
+        if "429" in msg or "quota" in msg.lower() or "resourceexhausted" in msg.lower():
+            logger.warning("LLM quota exceeded; trying JSON-LD fallback extraction.")
+            fallback = extract_recipe_from_jsonld(scraped.get("raw_html", ""), url)
+            if fallback:
+                llm_data = fallback
+            else:
+                raise HTTPException(
+                    status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                    detail="Gemini quota exceeded and JSON-LD fallback was not available for this page."
+                )
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail=msg
+            )
 
     # Step 3: Save to database
     try:
@@ -104,9 +117,13 @@ def extract_recipe(request: schemas.ExtractRequest, db: Session = Depends(get_db
             detail=f"Failed to save recipe to database: {str(e)}"
         )
 
+    message = "Recipe extracted and saved successfully"
+    if isinstance(llm_data, dict) and llm_data.get("_extraction_method") == "jsonld":
+        message = "Recipe extracted using JSON-LD fallback (Gemini quota exceeded)"
+
     return schemas.ExtractResponse(
         success=True,
-        message="Recipe extracted and saved successfully",
+        message=message,
         recipe=schemas.RecipeDetail.model_validate(recipe),
         cached=False,
     )

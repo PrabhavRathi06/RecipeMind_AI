@@ -11,11 +11,56 @@ logger = logging.getLogger(__name__)
 
 # llm init
 
+_RETRY_PATCHED = False
+
+def _patch_langchain_google_genai_retry() -> None:
+    """
+    langchain_google_genai has a hard-coded retry policy (10 attempts) for
+    ResourceExhausted/429 which can make our API appear "stuck".
+    We patch it down to a small number of attempts so the API fails fast
+    and returns a helpful error to the UI.
+    """
+    global _RETRY_PATCHED
+    if _RETRY_PATCHED:
+        return
+
+    try:
+        import google.api_core
+        import langchain_google_genai.chat_models as cm
+        from tenacity import before_sleep_log, retry, retry_if_exception_type, stop_after_attempt, wait_exponential
+
+        def _create_retry_decorator_limited():
+            return retry(
+                reraise=True,
+                stop=stop_after_attempt(2),
+                wait=wait_exponential(multiplier=1, min=1, max=8),
+                retry=(
+                    retry_if_exception_type(google.api_core.exceptions.ResourceExhausted)
+                    | retry_if_exception_type(google.api_core.exceptions.ServiceUnavailable)
+                    | retry_if_exception_type(google.api_core.exceptions.GoogleAPIError)
+                ),
+                before_sleep=before_sleep_log(logger, logging.WARNING),
+            )
+
+        cm._create_retry_decorator = _create_retry_decorator_limited  # type: ignore[attr-defined]
+        _RETRY_PATCHED = True
+    except Exception:
+        # If patching fails, we still proceed with defaults.
+        _RETRY_PATCHED = True
+
 def get_llm():
+    if not settings.GEMINI_API_KEY:
+        raise ValueError(
+            "GEMINI_API_KEY is missing. Add it to `backend/.env` (or set it as an environment variable) "
+            "and restart the backend."
+        )
+    _patch_langchain_google_genai_retry()
     return ChatGoogleGenerativeAI(
         model="gemini-2.5-flash",
         google_api_key=settings.GEMINI_API_KEY,
         temperature=0.3,
+        timeout=60,
+        max_retries=2,
     )
 
 
